@@ -1,0 +1,33 @@
+{
+  "name": "git-client-hook",
+  "version": "0.0.1",
+  "description": "git local hook for node project with unit-test: bats",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run git-test",
+    "git-test": "bats git-hook/test",
+    "postinstall": "bash ./git-hook/git-hook-install.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adispring/git-client-hook.git"
+  },
+  "keywords": [
+    "git",
+    "hook",
+    "bats"
+  ],
+  "author": "wangzengdi <sunnyadi@163.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adispring/git-client-hook/issues"
+  },
+  "homepage": "https://github.com/adispring/git-client-hook#readme",
+  "devDependencies": {
+    "bats": "^0.4.2",
+    "bats-assert": "^1.0.1"
+  }
+}
