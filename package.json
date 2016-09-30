@@ -1,7 +1,7 @@
 {
   "name": "git-client-hook",
-  "version": "0.0.2",
-  "description": "git local hook for node project with unit-test: bats",
+  "version": "0.0.3",
+  "description": "git client hook for node project with unit-test: bats",
   "main": "index.js",
   "directories": {
     "test": "test"
