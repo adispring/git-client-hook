@@ -22,22 +22,8 @@ has_git_hooks_path() {
   fi
 }
 
-install_bats_and_assert() {
-  if [ ! -d "$PROJECT_ROOT/node_modules/bats" ]; then
-    echo "bats installing."
-    npm install bats --save-dev
-    echo "bats installed."
-  fi
-  if [ ! -d "$PROJECT_ROOT/node_modules/bats-assert" ]; then
-    echo "bats-assert installing."
-    npm install bats-assert --save-dev
-    echo "bats-assert installed."
-  fi
-}
-  
 is_node_env_dev $NODE_ENV
 has_git_hooks_path $GIT_HOOK_PATH
-install_bats_and_assert
 
 for hook_file in ${HOOK_FILE_NAMES}
 do
