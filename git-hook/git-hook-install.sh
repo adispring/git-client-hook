@@ -23,10 +23,6 @@ has_git_hooks_path() {
 }
 
 install_bats_and_assert() {
-  if [ ! -f "$PROJECT_ROOT/package.json" ]; then
-    echo "Node project does not have package.json !"
-    exit 1
-  fi
   if [ ! -d "$PROJECT_ROOT/node_modules/bats" ]; then
     echo "bats installing."
     npm install bats --save-dev

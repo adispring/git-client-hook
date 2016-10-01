@@ -4,12 +4,10 @@ load test_helper
 setup() {
   mkdir -p "$HOOK_TEST_PATH"
   cd "$HOOK_TEST_PATH"
-  cp -rf "$INSTALL_SCRIPT_PATH" "$HOOK_TEST_PATH"
-  cp "$HOOK_TEST_INSTALL_PATH/test/package.json" "$HOOK_TEST_PATH/package.json"
-  cp -rf "$HOOK_TEST_INSTALL_PATH/test/node_modules" "$HOOK_TEST_PATH"
+  cp "$INSTALL_SCRIPT_PATH/test/package.json" "$HOOK_TEST_PATH/package.json"
   git init
   git config user.email sunnyadi@163.com
-  bash $HOOK_TEST_INSTALL_PATH/git-hook-install.sh
+  run npm install git-client-hook --save
 }
 
 @test "prepare-commit-msg: master/develop/test/release should not be changed locally." {
@@ -51,7 +49,6 @@ setup() {
 
 @test "prepare-commit-msg: commit message should not be empty." {
   git config user.email sunnyadi@163.com
-  bash $HOOK_TEST_INSTALL_PATH/git-hook-install.sh
   git checkout -b feature/TASK-9527
   git add .
   run git commit -m ""

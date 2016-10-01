@@ -1,5 +1,5 @@
 {
-  "name": "git-client-hook",
+  "name": "git-client-hook-test",
   "version": "0.0.1",
   "description": "git client hook for node project with unit-test: bats",
   "main": "index.js",
@@ -8,8 +8,7 @@
   },
   "scripts": {
     "test": "npm run git-test",
-    "git-test": "bats git-hook/test",
-    "postinstall": "bash ./git-hook/git-hook-install.sh"
+    "git-test": "bats git-hook/test"
   },
   "repository": {
     "type": "git",
@@ -28,7 +27,5 @@
   },
   "homepage": "https://github.com/adispring/git-client-hook#readme",
   "devDependencies": {
-    "bats": "^0.4.2",
-    "bats-assert": "^1.0.1"
   }
 }

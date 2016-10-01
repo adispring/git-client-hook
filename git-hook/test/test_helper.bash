@@ -9,8 +9,8 @@ export INSTALL_SCRIPT_PATH="$PROJECT_PATH/git-hook"
 
 if [ -z "$HOOK_TEST_PATH" ]; then
   export HOOK_TEST_PATH="$HOME/tmp/git-hook-local-temp"
-  export HOOK_TEST_INSTALL_PATH="$HOOK_TEST_PATH/git-hook"
-  export HOOK_TEST_REPO_PATH="$HOOK_TEST_PATH/git-hook/hooks"
+  export HOOK_TEST_INSTALL_PATH="$HOOK_TEST_PATH/node_modules/git-client-hook/git-hook"
+  export HOOK_TEST_REPO_PATH="$HOOK_TEST_INSTALL_PATH/hooks"
 
   PATH="$HOOK_TEST_INSTALL_PATH:$PATH"
   PATH="$HOOK_TEST_REPO_PATH:$PATH"

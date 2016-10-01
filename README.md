@@ -14,6 +14,8 @@ git push will be cancelled, and output errors npm found.
 
 ### `prepare-commit-msg`: add branch name(jira) to commit message automatically & do some check
 
+JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
+
 Your branch name should have format like `feature/TASK-[1234]` or `bugfix/TASK-[1234]`.
 When run git commit, prepare-commit-msg hook will add branch name(jira task number) to
 commit message prepend.
@@ -37,7 +39,7 @@ Before install git hooks to `.git/hooks`, there are also some checks,
 
 Check options includes:
 
-1. git hook will install only if NODE_ENV is development or undefined.
+1. git hook will install only if NODE_ENV is development or undefined.(some problems with NODE_ENV)
 2. if the project is managed by git.(has .git/ dir) 
 3. whether some hooks have already installed, whether hooks have changed/updated. If hook has already installed and not changed, this hook will not install again, else if it updated, it will updated.
 
@@ -45,10 +47,7 @@ Check options includes:
 
 You can add any fantasy git client hooks to the repository, or custom it for your project.
 
-Tests are executed using [Bats](https://github.com/sstephenson/bats):
-
-    $ bats git-hook/test
-    $ bats git-hook/test/<file>.bats
+Tests are executed using [Bats](https://github.com/sstephenson/bats)
 
 Please feel free to submit pull requests and file bugs on the [issue
 tracker](https://github.com/adispring/git-client-hook/issues).
@@ -57,4 +56,11 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 1. add post-commit to run npm test in background
 2. add git-hook CLI: 1.custom pre-commit email verify; 2.batch change current branch commits email 
-3. update git unit test for new git-hook-install.sh
+3. remove git hooks & bats & bats-assert when uninstall git-client-hook
+4. NODE_ENV does not work when bash git-hook-install.sh, need fix it.
+
+## DONE
+
+v0.0.4 :
+
+1. update git unit test for new git-hook-install.sh
