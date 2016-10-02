@@ -1,36 +1,37 @@
 
 # git-client-hook
 
-git-client-hook is a repository that contains some git client hook.
+git-client-hook used for installing some git client hook into node project.
 [git client hook describe link](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-It's now used for node project, you can custom it for your project.
 
 ## Function of git client hook
 
 ### `pre-push`: run npm test before git push
 
-If pre-push's npm test passed, then git push will go on, else if pre-push failure,
-git push will be cancelled, and output errors npm found.
+If `npm test` passed, git push will go on, else git push will be cancelled,
+and output errors npm test found.
 
 ### `prepare-commit-msg`: add branch name(jira) to commit message automatically & do some check
 
-JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
+1. Check if commit-msg is valid, check options as follows:
 
-Your branch name should have format like `feature/TASK-[1234]` or `bugfix/TASK-[1234]`.
-When run git commit, prepare-commit-msg hook will add branch name(jira task number) to
-commit message prepend.
+* if commit on branch: **master/develop/release/test**, it will output a warning.
+* if **commit without any message**, this commit will fail.
+* if commit message already contains a jira task number, it will not add one again.
+
+```
+JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
+```
+
+2. Add JIRA TASK number(branch name) to commit-msg.
+
+If all above passed, **prepare-commit-msg will add branch name(JIRA TASK number) to commit message**.
+
 [The function of JIRA Task number in commit message](https://confluence.atlassian.com/display/FISHEYE/Using+Smart+Commits): can build a link between git commit and JIRA TASK.
 
-Before add branch name(JIRA TASK number) to commit message, there are some checks,
+## HOW TO USE git-client-hook
 
-Check options includes:
-
-1. if commit on branch: master/develop/release/test, it will output a warning.
-2. if commit without any message, this commit will fail.
-3. if commit message already contains a jira task number, it will not add one again.
-If all above passed, prepare-commit-msg will add branch name(JIRA TASK number) to commit message.
-
-## Installing git-client-hook
+### Install
 
 Run `npm install git-client-hook --save`, pre-push & prepare-commit-msg hooks
 will install into `git/hooks`.
@@ -39,9 +40,18 @@ Before install git hooks to `.git/hooks`, there are also some checks,
 
 Check options includes:
 
-1. git hook will install only if NODE_ENV is development or undefined.(some problems with NODE_ENV)
-2. if the project is managed by git.(has .git/ dir) 
-3. whether some hooks have already installed, whether hooks have changed/updated. If hook has already installed and not changed, this hook will not install again, else if it updated, it will updated.
+1. Git hook will install only if NODE_ENV is development or undefined.
+2. If project is managed by git.(has .git/ dir) 
+3. Check if some hooks have already installed, if hooks have changed/updated.
+If hook has already installed and not changed, this hook will not install again,
+else if it updated, it will updated.
+
+### Uninstall
+
+Run `npm uninstall git-client-hook --save`:
+
+1. git-client-hook will be uninstalled.
+2. git hooks installed into .git/hooks/ will be uninstalled.
 
 ## Development
 
@@ -56,11 +66,20 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 1. add post-commit to run npm test in background
 2. add git-hook CLI: 1.custom pre-commit email verify; 2.batch change current branch commits email 
-3. remove git hooks & bats & bats-assert when uninstall git-client-hook
-4. NODE_ENV does not work when bash git-hook-install.sh, need fix it.
+5. add git hook update unit-test.
 
 ## DONE
 
 v0.0.4 :
 
 1. update git unit test for new git-hook-install.sh
+
+v0.0.5 :
+
+1. remove bats & bats-assert from git-hook-install.sh
+
+v0.0.6
+
+1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
+2. fix NODE_ENV does not work when bash git-hook-install.sh.
+

@@ -7,7 +7,7 @@ setup() {
   cp "$INSTALL_SCRIPT_PATH/test/package.json" "$HOOK_TEST_PATH/package.json"
   git init
   git config user.email sunnyadi@163.com
-  run npm install git-client-hook --save
+  npm install "$PROJECT_PATH" --save
 }
 
 @test "prepare-commit-msg: master/develop/test/release should not be changed locally." {
@@ -48,7 +48,6 @@ setup() {
 }
 
 @test "prepare-commit-msg: commit message should not be empty." {
-  git config user.email sunnyadi@163.com
   git checkout -b feature/TASK-9527
   git add .
   run git commit -m ""
@@ -64,3 +63,4 @@ setup() {
   run git commit -m "feature/TASK-9527 branch name alread in commit message"
   assert_success
 }
+

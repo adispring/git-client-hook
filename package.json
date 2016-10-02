@@ -1,6 +1,6 @@
 {
   "name": "git-client-hook",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "git client hook for node project with unit-test: bats",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,8 @@
   "scripts": {
     "test": "npm run git-test",
     "git-test": "bats git-hook/test",
-    "postinstall": "bash ./git-hook/git-hook-install.sh"
+    "postinstall": "bash ./git-hook/git-hook-install.sh",
+    "preuninstall": "bash ./git-hook/git-hook-uninstall.sh"
   },
   "repository": {
     "type": "git",

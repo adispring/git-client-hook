@@ -1,10 +1,10 @@
 #!/bin/bash
 
-INSTALL_SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd -P)"
-CUSTOM_HOOK_PATH="$INSTALL_SCRIPT_PATH/hooks"
-PROJECT_ROOT=${PROJECT_ROOT:-$(cd "$INSTALL_SCRIPT_PATH/../../.."; pwd -P)}
-GIT_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
-HOOK_FILE_NAMES=$(ls ${CUSTOM_HOOK_PATH})
+INSTALL_PATH="$(cd "$(dirname "$0")" && pwd -P)"
+PROJECT_ROOT=${PROJECT_ROOT:-$(cd "$INSTALL_PATH/../../.."; pwd -P)}
+FROM_HOOK_PATH="$INSTALL_PATH/hooks"
+TO_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
+HOOK_FILE_NAMES=$(ls ${FROM_HOOK_PATH})
 
 is_node_env_dev() {
   node_env=$1
@@ -23,13 +23,13 @@ has_git_hooks_path() {
 }
 
 is_node_env_dev $NODE_ENV
-has_git_hooks_path $GIT_HOOK_PATH
+has_git_hooks_path $TO_HOOK_PATH
 
 for hook_file in ${HOOK_FILE_NAMES}
 do
   ALL_HOOKS+=($hook_file)
-  if [ -f "$GIT_HOOK_PATH/$hook_file" ]; then
-    file_diff=$(diff "$CUSTOM_HOOK_PATH/$hook_file" "$GIT_HOOK_PATH/$hook_file")
+  if [ -f "$TO_HOOK_PATH/$hook_file" ]; then
+    file_diff=$(diff "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file")
     
     if [ -z "$file_diff" ]; then
       EXIST_HOOKS+=(${hook_file})
@@ -48,10 +48,10 @@ else
   if [ ${#UPDATE_HOOKS[@]} -gt 0 ]; then
     for hook_file in ${UPDATE_HOOKS[@]}
     do
-      file_diff=$(diff "$CUSTOM_HOOK_PATH/$hook_file" "$GIT_HOOK_PATH/$hook_file")
+      file_diff=$(diff "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file")
       echo -e "${hook_file} has changed: \n${file_diff}"
       echo "${hook_file} updating..."
-      cp "$CUSTOM_HOOK_PATH/$hook_file" "$GIT_HOOK_PATH/$hook_file"
+      cp "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file"
       echo -e "${hook_file} updated!\n"
      done
   fi
@@ -59,7 +59,7 @@ else
     for hook_file in ${INSTALL_HOOKS[@]}
     do
       echo "${hook_file} installing..."
-      cp "$CUSTOM_HOOK_PATH/$hook_file" "$GIT_HOOK_PATH/$hook_file"
+      cp "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file"
       echo -e "${hook_file} installed!\n"
      done
   fi

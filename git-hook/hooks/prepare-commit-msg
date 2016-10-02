@@ -7,40 +7,35 @@
 # message file.  If the hook fails with a non-zero status,
 # the commit is aborted.
 #
-# To enable this hook, rename this file to "prepare-commit-msg".
-
-# Reference from https://gist.github.com/bartoszmajsak/1396344
-# http://www.cnblogs.com/276815076/archive/2011/10/30/2229286.html
-# http://www.cnblogs.com/light169/archive/2006/10/18/532347.html
-# http://www.cnblogs.com/end/archive/2012/02/21/2360965.html
 
 JIRA_MATCH="[A-Z][A-Z_0-9]+-[0-9]+"
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 
-if [ -z "$BRANCHES_TO_SKIP" ]; then
-  BRANCHES_TO_SKIP=(master develop release test)
-fi
-
-BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
-
-BRANCH_NAME_WITH_JIRA=$(echo "$BRANCH_NAME" | grep -E "$JIRA_MATCH")
-
 COMMIT_EDITMSG=$(cat "$1")
 
-BRANCH_IN_COMMIT=$(grep -c "$BRANCH_NAME" $1)
+if [ -z "$BRANCHES_TO_SKIP" ]; then
+  BRANCHES_TO_SKIP="(master|develop|release|test)"
+fi
+
+is_branch_empty() {
+  if [ -z "$BRANCH_NAME" ]; then 
+    echo "Branch name: \"$BRANCH_NAME\" should not be Empty!"
+    exit 1
+  fi
+}
 
 is_branch_excluded() {
-  branch_excluded=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
-  if [[ $branch_excluded -eq 1 ]]; then
+  local branch_excluded=$(echo "$BRANCH_NAME" | grep -E "$BRANCHES_TO_SKIP")
+  if [[ -n $branch_excluded ]]; then
     echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⛔️ "
     exit 0
   fi
 }
     
 is_branch_has_jira() {
-  branch_name_with_jira=$(echo "$BRANCH_NAME" | grep -E "$JIRA_MATCH")
-  if [[ -z $branch_name_with_jira ]]; then
+  local branch_with_jira=$(echo "$BRANCH_NAME" | grep -E "$JIRA_MATCH")
+  if [[ -z $branch_with_jira ]]; then
     echo "Branch name: \"$BRANCH_NAME\" does not match JIRA format. Please change it !!! ✏️ "
     exit 1
   fi
@@ -54,17 +49,17 @@ is_commit_msg_empty() {
 }
 
 is_branch_already_in_commit() {
-  if [[ $BRANCH_IN_COMMIT -ge 1 ]]; then
+  local branch_in_commit=$(grep -c "$BRANCH_NAME" $1)
+  if [[ $branch_in_commit -ge 1 ]]; then
     exit 0
   fi
 }
 
+is_branch_empty
 is_branch_excluded
 is_branch_has_jira
 is_commit_msg_empty
 is_branch_already_in_commit
 
-if [ -n "$BRANCH_NAME" ] && ! [[ $BRANCH_EXCLUDED -eq 1 ]] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
-  echo "$BRANCH_NAME" $(cat "$1") > $1
-fi
+echo "$BRANCH_NAME" $(cat "$1") > $1
 
