@@ -6,8 +6,6 @@ FROM_HOOK_PATH="$INSTALL_PATH/hooks"
 TO_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
 HOOK_FILE_NAMES=$(ls ${FROM_HOOK_PATH})
 
-echo '************uninstall'
-
 has_git_hooks_path() {
   git_hook_path=$1
   if [ ! -d "$git_hook_path" ]; then
