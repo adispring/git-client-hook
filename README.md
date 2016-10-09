@@ -1,8 +1,7 @@
 
 # git-client-hook
 
-git-client-hook used for installing some git client hook into node project.
-[git client hook describe link](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+git-client-hook used for installing some [git client hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) into node project.
 
 ## Function of git client hook
 
@@ -11,7 +10,7 @@ git-client-hook used for installing some git client hook into node project.
 If `npm test` passed, git push will go on, else git push will be cancelled,
 and output errors npm test found.
 
-### `prepare-commit-msg`: add branch name(jira) to commit message automatically & do some check
+### `commit-msg`: add branch name(jira) to commit message automatically & do some check
 
 1. Check if commit-msg is valid, check options as follows:
 
@@ -25,7 +24,7 @@ JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
 
 2. Add JIRA TASK number(branch name) to commit-msg.
 
-If all above passed, **prepare-commit-msg will add branch name(JIRA TASK number) to commit message**.
+If all above passed, **commit-msg will add branch name(JIRA TASK number) to commit message**.
 
 [The function of JIRA Task number in commit message](https://confluence.atlassian.com/display/FISHEYE/Using+Smart+Commits): can build a link between git commit and JIRA TASK.
 
@@ -33,7 +32,7 @@ If all above passed, **prepare-commit-msg will add branch name(JIRA TASK number)
 
 ### Install
 
-Run `npm install git-client-hook --save`, pre-push & prepare-commit-msg hooks
+Run `npm install git-client-hook --save`, pre-push & commit-msg hooks
 will install into `git/hooks`.
 
 Before install git hooks to `.git/hooks`, there are also some checks,
@@ -83,3 +82,8 @@ v0.0.6
 1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
 2. fix NODE_ENV does not work when bash git-hook-install.sh.
 
+v0.0.8
+
+1. change prepare-commit-msg to commit-msg. prepare-commit-msg invoked before editor, commit-msg invoked after user enters a commit message.
+2. optimize string judgement, fix string var bug: $() to "$()"
+3. fix empty commit-msg judegment.

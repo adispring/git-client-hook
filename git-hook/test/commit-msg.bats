@@ -10,7 +10,7 @@ setup() {
   npm install "$PROJECT_PATH" --save
 }
 
-@test "prepare-commit-msg: master/develop/test/release should not be changed locally." {
+@test "commit-msg: master/develop/test/release should not be changed locally." {
   git add .
   run git commit -m "commit message"
   assert_output_contains  "warning: Branch master should not be changed locally! ⛔️ "
@@ -34,7 +34,7 @@ setup() {
   assert_output_contains  "warning: Branch test should not be changed locally! ⛔️ "
 }
 
-@test "prepare-commit-msg: branch name should contains jira task." {
+@test "commit-msg: branch name should contains jira task." {
   git checkout -b feature/TASK-9527
   git add .
   run git commit -m "commit message"
@@ -47,17 +47,17 @@ setup() {
   assert_output_contains "Branch name: \"no-jira-branch\" does not match JIRA format. Please change it !!! ✏️ "
 }
 
-@test "prepare-commit-msg: commit message should not be empty." {
+@test "commit-msg: commit message should not be empty." {
   git checkout -b feature/TASK-9527
   git add .
-  run git commit -m ""
+  run git commit -m "#start with # is also an empty line"
   assert_failure "Commit message should not be Empty! Write Sth about the commit. ✏️ "
 
   run git commit -m "commit message"
   assert_success
 }
 
-@test "prepare-commit-msg: branch name will not add again if commit message contains it already." {
+@test "commit-msg: branch name will not add again if commit message contains it already." {
   git checkout -b feature/TASK-9527
   git add .
   run git commit -m "feature/TASK-9527 branch name alread in commit message"
