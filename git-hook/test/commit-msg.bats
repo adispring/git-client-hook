@@ -2,12 +2,12 @@
 load test_helper
 
 setup() {
-  mkdir -p "$HOOK_TEST_PATH"
-  cd "$HOOK_TEST_PATH"
-  cp "$INSTALL_SCRIPT_PATH/test/package.json" "$HOOK_TEST_PATH/package.json"
+  mkdir -p "$GIT_TEST_PROJECT_PATH"
+  cd "$GIT_TEST_PROJECT_PATH"
+  cp "$GIT_SRC_INSTALL_PATH/test/package.json" "$GIT_TEST_PROJECT_PATH/package.json"
   git init
   git config user.email sunnyadi@163.com
-  npm install "$PROJECT_PATH" --save
+  npm install "$GIT_SRC_PROJECT_PATH" --save
 }
 
 @test "commit-msg: master/develop/test/release should not be changed locally." {

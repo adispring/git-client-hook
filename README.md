@@ -24,9 +24,9 @@ JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
 
 2. Add JIRA TASK number(branch name) to commit-msg.
 
-If all above passed, **commit-msg will add branch name(JIRA TASK number) to commit message**.
+If all above passed, **commit-msg will add branch name (JIRA TASK number) to commit message**.
 
-[The function of JIRA Task number in commit message](https://confluence.atlassian.com/display/FISHEYE/Using+Smart+Commits): can build a link between git commit and JIRA TASK.
+[Add JIRA Task number into commit message](https://confluence.atlassian.com/display/FISHEYE/Using+Smart+Commits) can build a link between git commit and JIRA TASK.
 
 ## HOW TO USE git-client-hook
 
@@ -65,25 +65,25 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 1. add post-commit to run npm test in background
 2. add git-hook CLI: 1.custom pre-commit email verify; 2.batch change current branch commits email 
-5. add git hook update unit-test.
 
 ## DONE
 
-v0.0.4 :
-
+###v0.0.4
 1. update git unit test for new git-hook-install.sh
 
-v0.0.5 :
-
+###v0.0.5
 1. remove bats & bats-assert from git-hook-install.sh
 
-v0.0.6
-
+###v0.0.6
 1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
 2. fix NODE_ENV does not work when bash git-hook-install.sh.
 
-v0.0.8
-
+###v0.0.8
 1. change prepare-commit-msg to commit-msg. prepare-commit-msg invoked before editor, commit-msg invoked after user enters a commit message.
 2. optimize string judgement, fix string var bug: $() to "$()"
 3. fix empty commit-msg judegment.
+
+###v0.0.9
+1. add git hook update unit-test
+2. rename unit test dir name
+
