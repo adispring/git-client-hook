@@ -82,5 +82,6 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 2. rename unit test dir name
 
 ###v0.0.10
+###v0.0.11
 1. modify README.md
 
