@@ -13,15 +13,9 @@ and output errors npm test found.
 ### `commit-msg`: add branch name(jira) to commit message automatically & do some check
 
 1. Check if commit-msg is valid, check options as follows:
-
-* if commit on branch: **master/develop/release/test**, it will output a warning.
-* if **commit without any message**, this commit will fail.
-* if commit message already contains a jira task number, it will not add one again.
-
-```
-JIRA TASK number regex: [A-Z][A-Z_0-9]+-[0-9]+
-```
-
+  * if commit on branch: **master/develop/release/test**, it will output a warning.
+  * if **commit without any message**, this commit will fail.
+  * if commit message already contains a jira task number(regex: `[A-Z][A-Z_0-9]+-[0-9]+`), it will not add one again.
 2. Add JIRA TASK number(branch name) to commit-msg.
 
 If all above passed, **commit-msg will add branch name (JIRA TASK number) to commit message**.
@@ -37,7 +31,7 @@ will install into `git/hooks`.
 
 Before install git hooks to `.git/hooks`, there are also some checks,
 
-Check options includes:
+Check options as follows:
 
 1. Git hook will install only if NODE_ENV is development or undefined.
 2. If project is managed by git.(has .git/ dir) 
@@ -86,4 +80,7 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 ###v0.0.9
 1. add git hook update unit-test
 2. rename unit test dir name
+
+###v0.0.10
+1. modify README.md
 
