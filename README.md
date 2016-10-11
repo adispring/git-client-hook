@@ -83,5 +83,6 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ###v0.0.10
 ###v0.0.11
+###v0.0.12
 1. modify README.md
 
