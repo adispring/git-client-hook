@@ -41,7 +41,7 @@ is_branch_has_jira() {
   fi
 }
 
-is_branch_empty() {
+is_commit_msg_empty() {
   echo "$COMMIT_EDITMSG" &> commit_msg.temp
   local temp_msg=`sed -e '/# Everything below will be removed\./,$ d' \
     -e '/^#/d' \
@@ -62,6 +62,7 @@ is_branch_already_in_commit() {
 }
 
 is_branch_empty
+is_commit_msg_empty
 is_branch_excluded
 is_branch_has_jira
 is_commit_msg_empty
