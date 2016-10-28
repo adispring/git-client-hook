@@ -61,7 +61,7 @@ npm_test() {
 }
 
 check_range() {
-  if [ "$romte_sha" = $z40 ]; then
+  if [ "$remote_sha" = $z40 ]; then
     range=$(git merge-base origin/master HEAD)
     range="$range..."
   else
