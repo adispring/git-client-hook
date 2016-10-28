@@ -6,6 +6,14 @@ FROM_HOOK_PATH="$INSTALL_PATH/hooks"
 TO_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
 HOOK_FILE_NAMES=$(ls ${FROM_HOOK_PATH})
 
+_CURRENT_DIR=$(pwd -P)
+cd "$PROJECT_ROOT"
+while [ ! -d ".git" ]; do
+  cd ..
+done
+GIT_HOOK_PATH="$(pwd -P)/.git/hooks"
+cd "$_CURRENT_DIR"
+
 is_node_env_dev() {
   node_env=$1
   if [ -n "$node_env" -a "$node_env" != "development" ]; then
