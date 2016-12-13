@@ -1,7 +1,8 @@
 #!/bin/bash
 
 INSTALL_PATH="$(cd "$(dirname "$0")" && pwd -P)"
-PROJECT_ROOT=${PROJECT_ROOT:-$(cd "$INSTALL_PATH/../../.."; pwd -P)}
+GIT_ROOT_DIR="$(git rev-parse --show-toplevel || echo "$INSTALL_PATH/../../..")"
+PROJECT_ROOT=${PROJECT_ROOT:-$(cd "$GIT_ROOT_DIR"; pwd -P)}
 FROM_HOOK_PATH="$INSTALL_PATH/hooks"
 TO_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
 HOOK_FILE_NAMES=$(ls ${FROM_HOOK_PATH})

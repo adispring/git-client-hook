@@ -1,60 +1,151 @@
 #!/bin/sh
 
-# An example hook script to verify what is about to be pushed.  Called by "git
-# push" after it has checked the remote status, but before anything has been
-# pushed.  If this script exits with a non-zero status nothing will be pushed.
-#
-# This hook is called with the following parameters:
+# An hook script to verify what is about to be pushed.
 #
 # $1 -- Name of the remote to which the push is being done
 # $2 -- URL to which the push is being done
 #
-# If pushing without using a named remote those arguments will be equal.
-#
 # Information about the commits which are being pushed is supplied as lines to
 # the standard input in the form:
-#
 #   <local ref> <local sha1> <remote ref> <remote sha1>
-#
-# This sample shows how to prevent push of commits where the log message starts
-# with "WIP" (work in progress).
+
+GITHOOK_CONFIG=.githookrc
+GITHOOK_TEMP_FILE=".$(date +%s%d).temp"
 
 remote="$1"
 url="$2"
 
 z40=0000000000000000000000000000000000000000
 
+read_config() {
+  if [ -f "$GITHOOK_CONFIG" ]; then
+    . "$GITHOOK_CONFIG"
+  fi
+  if [ -z "$use_inc_check" ]; then
+    use_inc_check=
+  else
+    use_inc_check=1
+  fi
+}
+
+find_dir() {
+  cur_dir=$(pwd -P)
+  local depth=0
+  local node_dir=
+  while [ -z "$node_dir" ]; do
+    depth=$(expr $depth + 1)
+    node_dir=$(find "$cur_dir" -d $depth -type d -name "node_modules" | head -n 1)
+    if [ $depth -gt 10 ]; then
+      echo >&2 "**** Not Found 'node_modules' ****  ⛔️ "
+      exit 1
+    fi
+  done
+  cd "$node_dir"
+  cd ..
+  work_dir=$(pwd -P)
+}
+
+npm_test() {
+  echo "**** NPM Testing...   ****  🔍"
+  npm test &> "$GITHOOK_TEMP_FILE"
+  local test_result=$(cat "$GITHOOK_TEMP_FILE" | grep "npm ERR! Test failed.")
+  if [ -n "$test_result" ]; then
+    cat "$GITHOOK_TEMP_FILE"
+    echo >&2 "**** NPM Test ERROR!  ****  🐞 "
+    rm "$GITHOOK_TEMP_FILE"
+    exit 1
+  else
+    rm "$GITHOOK_TEMP_FILE"
+    echo "**** NPM Test PASSED! ****  🍻 "
+  fi 
+}
+
+check_range() {
+  if [ "$remote_sha" = $z40 ]; then
+    range=$(git merge-base origin/master HEAD)
+    range="$range..."
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  echo "Range: $range"
+  files=$(git diff --name-status "$range" |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
+}
+
+lint_test() {
+  local exit_code=0
+
+  local eslint_bin="$work_dir/node_modules/.bin/eslint"
+  local eslint_config="$work_dir/.eslintrc.json"
+  local eslint_ignore="$work_dir/.eslintignore"
+
+  if [ ! -e "$eslint_bin" ]; then
+    echo >&2 "Not found 'eslint' bin file, please install it with npm"
+    echo "Ignore ESlint check"
+    exit 0
+  else
+    if [ -f "$eslint_config" ]; then
+      eslint_config="-c $eslint_config"
+    else
+      eslint_config=
+    fi
+    if [ -f "$eslint_ignore" ]; then
+      eslint_ignore="--ignore-path $eslint_ignore"
+    else
+      eslint_ignore=
+    fi
+  fi
+
+  local files
+  check_range
+
+  local lint_result
+  if [ -z "$files" ]; then
+    # no js files modified or added
+    exit 0
+  else
+    echo "**** ESlint Testing... ****  🔍 "
+    echo "$files"
+    echo "eslint version: " "$("$eslint_bin" --version)"
+    lint_result=$(echo "$files" |xargs "$eslint_bin" \
+      $eslint_config $eslint_ignore \
+      > "$work_dir/$GITHOOK_TEMP_FILE" \
+      && echo "**** ESlint PASSED!    ****  🍻 ")
+    cat "$work_dir/$GITHOOK_TEMP_FILE"
+    if [ -z "$lint_result" ]; then
+      echo >&2 "**** ESlint NOT Passed ****  🐞 "
+      exitcode=1
+    else
+      echo "$lint_result"
+    fi
+    rm "$work_dir/$GITHOOK_TEMP_FILE"
+    echo ""
+    exit $exitcode
+  fi
+}
+
+use_inc_check=
+cur_dir=
+work_dir=
+
+find_dir
+cd "$work_dir"
+
+read_config
+
 while read local_ref local_sha remote_ref remote_sha
 do
-	if [ "$local_sha" = $z40 ]
-	then
-		# Handle delete
-		:
-	else
-		if [ "$remote_sha" = $z40 ]
-		then
-			# New branch, examine all commits
-			range="$local_sha"
-		else
-			# Update to existing branch, examine new commits
-			range="$remote_sha..$local_sha"
-		fi
-
-    # Npm test
-    echo "**** NPM Testing...   ****  🔍"
-    npm test &> npmtest.temp
-    test_result=`cat npmtest.temp | grep "npm ERR! Test failed."`
-    if [ -n "$test_result" ]
-    then
-      cat npmtest.temp
-      echo >&2 "**** NPM Test ERROR!  ****  🐞"
-      rm npmtest.temp
-      exit 1
+  if [ "$local_sha" = $z40 ]; then
+    :
+  else
+    if [ -z "$use_inc_check" ]; then
+      cd "$work_dir"
+      npm_test
     else
-      rm npmtest.temp
-      echo "**** NPM Test PASSED! ****  🍻"
-    fi 
-	fi
+      cd "$cur_dir"
+      lint_test
+    fi
+  fi
 done
+cd "$cur_dir"
 
 exit 0

@@ -53,15 +53,12 @@ setup() {
   assert_output_contains "GIT LOCAL HOOK install done!  🍻"
   for hook_file in ${HOOKS_NAMES[@]}
   do
-    assert_output_contains "$hook_file installing..."
-    assert_output_contains "$hook_file installed!"
+    assert_output_contains "install $hook_file"
   done
 
   echo "#add sth to git_hook" >> "$GIT_TEST_GIT_HOOKS_PATH/${HOOKS_NAMES[0]}"
   rm -rf "$GIT_TEST_PROJECT_PATH/node_modules"
   run npm install "$GIT_SRC_PROJECT_PATH"
-  assert_output_contains "${HOOKS_NAMES[0]} has changed: "
-  assert_output_contains "${HOOKS_NAMES[0]} updating..."
-  assert_output_contains "${HOOKS_NAMES[0]} updated!"
+  assert_output_contains "bak up ${HOOKS_NAMES[0]}"
 }
 
