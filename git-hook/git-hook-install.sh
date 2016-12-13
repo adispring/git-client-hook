@@ -6,7 +6,7 @@ PROJECT_ROOT=${PROJECT_ROOT:-$(cd "$GIT_ROOT_DIR"; pwd -P)}
 FROM_HOOK_PATH="$INSTALL_PATH/hooks"
 TO_HOOK_PATH="$PROJECT_ROOT/.git/hooks"
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
-AFFECT_HOOKFILES=("prepare-commit-msg" "pre-push" "commit-msg")
+AFFECT_HOOKFILES=$(ls "$TO_HOOK_PATH" "$FROM_HOOK_PATH" |grep -v "\." |sort |uniq)
 
 is_node_env_dev() {
   node_env=$1
@@ -27,7 +27,7 @@ has_git_hooks_path() {
 is_node_env_dev $NODE_ENV
 has_git_hooks_path $TO_HOOK_PATH
 
-for hook_file in "${AFFECT_HOOKFILES[@]}"
+for hook_file in $AFFECT_HOOKFILES
 do
   if [ -f "$TO_HOOK_PATH/$hook_file" ]
   then
