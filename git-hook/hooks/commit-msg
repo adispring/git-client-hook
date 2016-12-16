@@ -55,7 +55,7 @@ is_commit_msg_empty() {
 }
 
 is_branch_already_in_commit() {
-  local branch_in_commit=$(grep -c "$BRANCH_NAME" $1)
+  local branch_in_commit=$(echo $1 | grep -c "$BRANCH_NAME")
   if [[ $branch_in_commit -ge 1 ]]; then
     exit 0
   fi
@@ -66,7 +66,7 @@ is_commit_msg_empty
 is_branch_excluded
 is_branch_has_jira
 is_commit_msg_empty
-is_branch_already_in_commit
+is_branch_already_in_commit "$COMMIT_EDITMSG"
 
 echo "$BRANCH_NAME" "$(cat "$1")" > $1
 
