@@ -21,7 +21,7 @@ setup() {
   unset NODE_ENV
   export NODE_ENV
   run npm install "$GIT_SRC_PROJECT_PATH" --save
-  assert_output_contains "GIT LOCAL HOOK install done!  🍻"
+  assert_output_contains "GIT CLIENT HOOK install done!  🍻"
   refute_output_contains "No need to install git-hook in NODE_ENV: "
   npm uninstall git-client-hook --save
 
@@ -49,8 +49,8 @@ setup() {
   export NODE_ENV
   local HOOKS_NAMES=($(ls $GIT_SRC_HOOK_PATH))
   run npm install "$GIT_SRC_PROJECT_PATH"
-  assert_output_contains "GIT LOCAL HOOK installing...! ⚙ "
-  assert_output_contains "GIT LOCAL HOOK install done!  🍻"
+  assert_output_contains "GIT CLIENT HOOK installing...! ⚙ "
+  assert_output_contains "GIT CLIENT HOOK install done!  🍻"
   for hook_file in ${HOOKS_NAMES[@]}
   do
     assert_output_contains "install $hook_file"
@@ -60,5 +60,9 @@ setup() {
   rm -rf "$GIT_TEST_PROJECT_PATH/node_modules"
   run npm install "$GIT_SRC_PROJECT_PATH"
   assert_output_contains "bak up ${HOOKS_NAMES[0]}"
+
+  rm -rf "$GIT_TEST_PROJECT_PATH/node_modules"
+  run npm install "$GIT_SRC_PROJECT_PATH"
+  assert_output_contains "No git client hooks should install"
 }
 
