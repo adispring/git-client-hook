@@ -62,29 +62,42 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
-###v0.0.4
-1. update git unit test for new git-hook-install.sh
+###v0.0.15
+1. fix mulit jira task add to commit-msg when open editor to edit commit message
+2. optimize jira number check: 
+    - check jira number instead of branch name
+    - add jira number instead of branch name to commit-msg.
 
-###v0.0.5
-1. remove bats & bats-assert from git-hook-install.sh
+###v0.0.14
+1. add increment eslin check
+2. fix typo: romte_sha -> remote_sha
+3. change install approach
+4. backup all exist and affected hooks
 
-###v0.0.6
-1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
-2. fix NODE_ENV does not work when bash git-hook-install.sh.
+###v0.0.13
+1. fix is_commit_msg_empty func in commit-msg
+
+###v0.0.12
+###v0.0.11
+###v0.0.10
+1. modify README.md
+
+###v0.0.9
+1. add git hook update unit-test
+2. rename unit test dir name
 
 ###v0.0.8
 1. change prepare-commit-msg to commit-msg. prepare-commit-msg invoked before editor, commit-msg invoked after user enters a commit message.
 2. optimize string judgement, fix string var bug: $() to "$()"
 3. fix empty commit-msg judegment.
 
-###v0.0.9
-1. add git hook update unit-test
-2. rename unit test dir name
+###v0.0.6
+1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
+2. fix NODE_ENV does not work when bash git-hook-install.sh.
 
-###v0.0.10
-###v0.0.11
-###v0.0.12
-1. modify README.md
+###v0.0.5
+1. remove bats & bats-assert from git-hook-install.sh
 
-###v0.0.13
-1. fix is_commit_msg_empty func in commit-msg
+###v0.0.4
+1. update git unit test for new git-hook-install.sh
+
