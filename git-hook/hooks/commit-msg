@@ -28,7 +28,7 @@ is_branch_empty() {
 
 is_branch_excluded() {
   local branch_excluded=$(echo "$BRANCH_NAME" | grep "$BRANCHES_TO_SKIP")
-  if [[ -n "$branch_excluded" ]]; then
+  if [ -n "$branch_excluded" ]; then
     echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⛔️ "
     exit 0
   fi
@@ -36,7 +36,7 @@ is_branch_excluded() {
     
 is_branch_has_jira() {
   local branch_with_jira=$(echo "$BRANCH_NAME" | grep "$JIRA_MATCH")
-  if [[ -z "$branch_with_jira" ]]; then
+  if [ -z "$branch_with_jira" ]; then
     echo "Branch name: \"$BRANCH_NAME\" does not match JIRA format. Please change it !!! ✏️ "
     exit 1
   fi
@@ -49,7 +49,7 @@ is_commit_msg_empty() {
     -e '/^[[:space:]]*$/d' \
     commit_msg.temp`
   rm commit_msg.temp
-  if [[ -z "$temp_msg" ]]; then
+  if [ -z "$temp_msg" ]; then
     echo "Commit message should not be Empty! Write Sth about the commit. ✏️ "
     exit 1
   fi
@@ -57,7 +57,7 @@ is_commit_msg_empty() {
 
 is_branch_already_in_commit() {
   local branch_in_commit=$(echo $1 | grep -c "$JIRA_STR")
-  if [[ $branch_in_commit -ge 1 ]]; then
+  if [ $branch_in_commit -ge 1 ]; then
     exit 0
   fi
 }
