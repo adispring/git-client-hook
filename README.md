@@ -69,7 +69,7 @@ tracker](https://github.com/adispring/git-client-hook/issues).
     - add jira number instead of branch name to commit-msg.
 
 ###v0.0.14
-1. add increment eslin check
+1. add increment eslint check
 2. fix typo: romte_sha -> remote_sha
 3. change install approach
 4. backup all exist and affected hooks
