@@ -5,8 +5,10 @@ setup() {
   mkdir -p "$GIT_TEST_PROJECT_PATH"
   cd "$GIT_TEST_PROJECT_PATH"
   cp "$GIT_SRC_INSTALL_PATH/test/package.json" "$GIT_TEST_PROJECT_PATH/package.json"
+  cp "$GIT_SRC_INSTALL_PATH/test/LICENSE" "$GIT_TEST_PROJECT_PATH/LICENSE"
   git init
   git config user.email sunnyadi@163.com
+  git config user.name wangzengdi
   npm install "$GIT_SRC_PROJECT_PATH" --save
 }
 

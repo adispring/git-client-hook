@@ -19,7 +19,7 @@ setup() {
   git init
   npm install "$GIT_SRC_PROJECT_PATH" --save
   run npm uninstall git-client-hook --save
-  assert_output_contains "GIT LOCAL HOOK uninstalling...! ⚙ "
-  assert_output_contains "GIT LOCAL HOOK uninstall done!  🗑 "
+  assert_output_contains "GIT CLIENT HOOK uninstalling...! ⚙ "
+  assert_output_contains "GIT CLIENT HOOK uninstall done!  🗑 "
 }
 

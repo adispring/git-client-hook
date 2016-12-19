@@ -37,7 +37,7 @@ hook_uninstall() {
   if [ ${#NOT_INSTALLED_HOOKS[@]} -eq ${#ALL_HOOKS[@]} ]; then
     echo "No git hook need to uninstall."
   else
-    echo -e "GIT LOCAL HOOK uninstalling...! ⚙ \n"
+    echo -e "GIT CLIENT HOOK uninstalling...! ⚙ \n"
     if [ ${#CHANGED_HOOKS[@]} -gt 0 ]; then
       for hook_file in ${CHANGED_HOOKS[@]}
       do
@@ -54,7 +54,7 @@ hook_uninstall() {
         echo -e "${hook_file} uninstalled!\n"
        done
     fi
-    echo "GIT LOCAL HOOK uninstall done!  🗑 "
+    echo "GIT CLIENT HOOK uninstall done!  🗑 "
   fi 
 }
 

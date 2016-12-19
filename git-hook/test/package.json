@@ -21,7 +21,7 @@
     "client"
   ],
   "author": "wangzengdi",
-  "license": "GNU",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/adispring/git-client-hook/issues"
   },
