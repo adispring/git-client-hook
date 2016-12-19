@@ -8,14 +8,15 @@
 # the commit is aborted.
 #
 
-JIRA_MATCH="[A-Z][A-Z_0-9]+-[0-9]+"
+JIRA_MATCH='[A-Z][A-Z_0-9]\+-[0-9]\+'
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
+JIRA_STR=$(echo $BRANCH_NAME |grep -oh $JIRA_MATCH)
 
 COMMIT_EDITMSG="$(cat "$1")"
 
 if [ -z "$BRANCHES_TO_SKIP" ]; then
-  BRANCHES_TO_SKIP="(master|develop|release|test)"
+  BRANCHES_TO_SKIP='^\(master\|develop\|release\|test\)$'
 fi
 
 is_branch_empty() {
@@ -26,7 +27,7 @@ is_branch_empty() {
 }
 
 is_branch_excluded() {
-  local branch_excluded=$(echo "$BRANCH_NAME" | grep -E "$BRANCHES_TO_SKIP")
+  local branch_excluded=$(echo "$BRANCH_NAME" | grep "$BRANCHES_TO_SKIP")
   if [[ -n "$branch_excluded" ]]; then
     echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⛔️ "
     exit 0
@@ -34,7 +35,7 @@ is_branch_excluded() {
 }
     
 is_branch_has_jira() {
-  local branch_with_jira=$(echo "$BRANCH_NAME" | grep -E "$JIRA_MATCH")
+  local branch_with_jira=$(echo "$BRANCH_NAME" | grep "$JIRA_MATCH")
   if [[ -z "$branch_with_jira" ]]; then
     echo "Branch name: \"$BRANCH_NAME\" does not match JIRA format. Please change it !!! ✏️ "
     exit 1
@@ -55,7 +56,7 @@ is_commit_msg_empty() {
 }
 
 is_branch_already_in_commit() {
-  local branch_in_commit=$(echo $1 | grep -c "$BRANCH_NAME")
+  local branch_in_commit=$(echo $1 | grep -c "$JIRA_STR")
   if [[ $branch_in_commit -ge 1 ]]; then
     exit 0
   fi
@@ -68,5 +69,5 @@ is_branch_has_jira
 is_commit_msg_empty
 is_branch_already_in_commit "$COMMIT_EDITMSG"
 
-echo "$BRANCH_NAME" "$(cat "$1")" > $1
+echo "$JIRA_STR" "$(cat "$1")" > $1
 
