@@ -48,7 +48,6 @@ do
   fi
 done
   
-echo -e "GIT LOCAL HOOK installing...! ⚙ \n"
 
 if [ ${#EXIST_HOOKS[@]} -gt 0 ]
 then
@@ -61,11 +60,14 @@ fi
 
 if [ ${#INSTALL_HOOKS[@]} -gt 0 ]
 then
+  echo -e "GIT CLIENT HOOK installing...! ⚙ \n"
   for hook_file in ${INSTALL_HOOKS[@]}
   do
     echo "install ${hook_file}"
     cp "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file"
   done
+  echo "GIT CLIENT HOOK install done!  🍻 "
+else
+  echo "No git client hooks should install"
 fi
 
-echo "GIT LOCAL HOOK install done!  🍻 "
