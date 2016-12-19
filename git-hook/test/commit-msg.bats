@@ -7,6 +7,7 @@ setup() {
   cp "$GIT_SRC_INSTALL_PATH/test/package.json" "$GIT_TEST_PROJECT_PATH/package.json"
   git init
   git config user.email sunnyadi@163.com
+  git config user.name wangzengdi
   npm install "$GIT_SRC_PROJECT_PATH" --save
 }
 
