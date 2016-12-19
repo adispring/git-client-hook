@@ -26,7 +26,7 @@ If all above passed, **commit-msg will add branch name (JIRA TASK number) to com
 
 ### Install
 
-Run `npm install git-client-hook --save`, pre-push & commit-msg hooks
+Run `npm install git-client-hook --save-dev`, pre-push & commit-msg hooks
 will install into `git/hooks`.
 
 Before install git hooks to `.git/hooks`, there are also some checks,
@@ -41,7 +41,7 @@ else if it updated, it will updated.
 
 ### Uninstall
 
-Run `npm uninstall git-client-hook --save`:
+Run `npm uninstall git-client-hook --save-dev`:
 
 1. git-client-hook will be uninstalled.
 2. git hooks installed into .git/hooks/ will be uninstalled.
@@ -62,42 +62,48 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
-###v0.0.15
+### v0.0.17
+### v0.0.16
+1. add travis ci
+2. fix shell if [[ to [
+3. fix some unit test warning
+
+### v0.0.15
 1. fix mulit jira task add to commit-msg when open editor to edit commit message
 2. optimize jira number check: 
     - check jira number instead of branch name
     - add jira number instead of branch name to commit-msg.
 
-###v0.0.14
+### v0.0.14
 1. add increment eslint check
 2. fix typo: romte_sha -> remote_sha
 3. change install approach
 4. backup all exist and affected hooks
 
-###v0.0.13
+### v0.0.13
 1. fix is_commit_msg_empty func in commit-msg
 
-###v0.0.12
-###v0.0.11
-###v0.0.10
+### v0.0.12
+### v0.0.11
+### v0.0.10
 1. modify README.md
 
-###v0.0.9
+### v0.0.9
 1. add git hook update unit-test
 2. rename unit test dir name
 
-###v0.0.8
+### v0.0.8
 1. change prepare-commit-msg to commit-msg. prepare-commit-msg invoked before editor, commit-msg invoked after user enters a commit message.
 2. optimize string judgement, fix string var bug: $() to "$()"
 3. fix empty commit-msg judegment.
 
-###v0.0.6
+### v0.0.6
 1. uninstall git hooks from .git/hooks/ when uninstall git-client-hook
 2. fix NODE_ENV does not work when bash git-hook-install.sh.
 
-###v0.0.5
+### v0.0.5
 1. remove bats & bats-assert from git-hook-install.sh
 
-###v0.0.4
+### v0.0.4
 1. update git unit test for new git-hook-install.sh
 
