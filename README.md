@@ -1,5 +1,8 @@
 
 # git-client-hook
+---
+
+[![Build Status](https://travis-ci.org/adispring/git-client-hook.svg?branch=master)](https://travis-ci.org/adispring/git-client-hook)
 
 git-client-hook used for installing some [git client hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) into node project.
 
