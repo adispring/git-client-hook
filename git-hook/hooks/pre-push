@@ -18,10 +18,12 @@ url="$2"
 z40=0000000000000000000000000000000000000000
 
 read_config() {
-  if [ -f "$GITHOOK_CONFIG" ]; then
+  if [ -f "$GITHOOK_CONFIG" ]
+  then
     . "$GITHOOK_CONFIG"
   fi
-  if [ -z "$use_inc_check" ]; then
+  if [ -z "$use_inc_check" ]
+  then
     use_inc_check=
   else
     use_inc_check=1
@@ -29,19 +31,26 @@ read_config() {
 }
 
 find_dir() {
-  cur_dir=$(pwd -P)
-  local depth=0
-  local node_dir=
-  while [ -z "$node_dir" ]; do
-    depth=$(expr $depth + 1)
-    node_dir=$(find "$cur_dir" -d $depth -type d -name "node_modules" | head -n 1)
-    if [ $depth -gt 10 ]; then
-      echo >&2 "**** Not Found 'node_modules' ****  ⛔️ "
-      exit 1
-    fi
-  done
-  cd "$node_dir"
-  cd ..
+  if [ -z "$work_dir" ]
+  then
+    cur_dir=$(pwd -P)
+    local depth=0
+    local node_dir=
+    while [ -z "$node_dir" ]
+    do
+      depth=$(expr $depth + 1)
+      node_dir=$(find "$cur_dir" -d $depth -type d -name "node_modules" | head -n 1)
+      if [ $depth -gt 10 ]
+      then
+        echo >&2 "**** Not Found 'node_modules' ****  ⛔️ "
+        exit 1
+      fi
+    done
+    cd "$node_dir"
+    cd ..
+  else
+    cd "$work_dir"
+  fi
   work_dir=$(pwd -P)
 }
 
@@ -49,7 +58,8 @@ npm_test() {
   echo "**** NPM Testing...   ****  🔍"
   npm test &> "$GITHOOK_TEMP_FILE"
   local test_result=$(cat "$GITHOOK_TEMP_FILE" | grep "npm ERR! Test failed.")
-  if [ -n "$test_result" ]; then
+  if [ -n "$test_result" ]
+  then
     cat "$GITHOOK_TEMP_FILE"
     echo >&2 "**** NPM Test ERROR!  ****  🐞 "
     rm "$GITHOOK_TEMP_FILE"
@@ -61,14 +71,15 @@ npm_test() {
 }
 
 check_range() {
-  if [ "$remote_sha" = $z40 ]; then
+  if [ "$remote_sha" -eq $z40 ]
+  then
     range=$(git merge-base origin/master HEAD)
     range="$range..."
   else
     range="$remote_sha..$local_sha"
   fi
   echo "Range: $range"
-  files=$(git diff --name-status "$range" |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
+  files=$(git diff --name-status "$range" . |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
 }
 
 lint_test() {
@@ -78,17 +89,20 @@ lint_test() {
   local eslint_config="$work_dir/.eslintrc.json"
   local eslint_ignore="$work_dir/.eslintignore"
 
-  if [ ! -e "$eslint_bin" ]; then
+  if [ ! -e "$eslint_bin" ]
+  then
     echo >&2 "Not found 'eslint' bin file, please install it with npm"
     echo "Ignore ESlint check"
     exit 0
   else
-    if [ -f "$eslint_config" ]; then
-      eslint_config="-c $eslint_config"
+    if [ -f "$eslint_config" ]
+    then
+      eslint_config="--config $eslint_config"
     else
       eslint_config=
     fi
-    if [ -f "$eslint_ignore" ]; then
+    if [ -f "$eslint_ignore" ]
+    then
       eslint_ignore="--ignore-path $eslint_ignore"
     else
       eslint_ignore=
@@ -99,25 +113,43 @@ lint_test() {
   check_range
 
   local lint_result
-  if [ -z "$files" ]; then
+  if [ -z "$files" ]
+  then
     # no js files modified or added
     exit 0
   else
     echo "**** ESlint Testing... ****  🔍 "
-    echo "$files"
-    echo "eslint version: " "$("$eslint_bin" --version)"
-    lint_result=$(echo "$files" |xargs "$eslint_bin" \
-      $eslint_config $eslint_ignore \
+
+    ## make a temporary directory and move files to it
+    cd $(git rev-parse --show-toplevel)
+    local tmp_dir="$(mktemp -d -t "eslint")"
+    echo "$files" | while read file
+    do
+      cp --parents "$file" "$tmp_dir/" 2>/dev/null \
+        || rsync --relative "$file" "$tmp_dir/"
+    done
+
+    cd "$tmp_dir"
+    find . -name "*.js" -print
+
+    echo "eslint version:" "$("$eslint_bin" --version)"
+    lint_result=$("$eslint_bin" \
+      $eslint_config $eslint_ignore ./ \
       > "$work_dir/$GITHOOK_TEMP_FILE" \
       && echo "**** ESlint PASSED!    ****  🍻 ")
     cat "$work_dir/$GITHOOK_TEMP_FILE"
-    if [ -z "$lint_result" ]; then
+    if [ -z "$lint_result" ]
+    then
       echo >&2 "**** ESlint NOT Passed ****  🐞 "
       exitcode=1
     else
       echo "$lint_result"
     fi
+
     rm "$work_dir/$GITHOOK_TEMP_FILE"
+    cd "$work_dir"
+    rm -rf "$tmp_dir"
+
     echo ""
     exit $exitcode
   fi
@@ -127,17 +159,17 @@ use_inc_check=
 cur_dir=
 work_dir=
 
-find_dir
-cd "$work_dir"
-
 read_config
+find_dir
 
 while read local_ref local_sha remote_ref remote_sha
 do
-  if [ "$local_sha" = $z40 ]; then
+  if [ "$local_sha" -eq $z40 ]
+  then
     :
   else
-    if [ -z "$use_inc_check" ]; then
+    if [ -z "$use_inc_check" ]
+    then
       cd "$work_dir"
       npm_test
     else
