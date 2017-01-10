@@ -17,7 +17,17 @@ url="$2"
 
 z40=0000000000000000000000000000000000000000
 
-read_config() {
+default_config()
+{
+  disable_merge_check=
+  disable_lint_check=
+  use_inc_check=
+  cur_dir=
+  work_dir=
+}
+
+read_config()
+{
   if [ -f "$GITHOOK_CONFIG" ]
   then
     . "$GITHOOK_CONFIG"
@@ -30,7 +40,8 @@ read_config() {
   fi
 }
 
-find_dir() {
+find_dir()
+{
   if [ -z "$work_dir" ]
   then
     cur_dir=$(pwd -P)
@@ -54,7 +65,8 @@ find_dir() {
   work_dir=$(pwd -P)
 }
 
-npm_test() {
+npm_test()
+{
   echo "**** NPM Testing...   ****  🔍"
   npm test &> "$GITHOOK_TEMP_FILE"
   local test_result=$(cat "$GITHOOK_TEMP_FILE" | grep "npm ERR! Test failed.")
@@ -70,7 +82,8 @@ npm_test() {
   fi 
 }
 
-check_range() {
+check_range()
+{
   if [ "$remote_sha" = $z40 ]
   then
     range=$(git merge-base origin/master HEAD)
@@ -82,7 +95,8 @@ check_range() {
   files=$(git diff --name-status "$range" . |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
 }
 
-lint_test() {
+lint_test()
+{
   local exit_code=0
 
   local eslint_bin="$work_dir/node_modules/.bin/eslint"
@@ -148,10 +162,38 @@ lint_test() {
   fi
 }
 
-use_inc_check=
-cur_dir=
-work_dir=
+check_ref_type()
+{
+  local result="heads"
+  echo "$1" |grep -oh 'heads\|tags\|notes'
+}
 
+check_ref_merge()
+{
+  result_check_merge=1
+  ref_type=$(check_type "$1")
+  if [ "$ref_type" != "heads" ]
+  then
+    result_check_merge=0 # tag, note or others
+  else
+    # TODO: 'master' branch shoudle be config
+    latest_rev="$(git rev-list -1 refs/remotes/origin/master)"
+    checkout_point="$(git merge-base refs/remotes/origin/master $1)"
+    if [ "$latest_rev" = "$checkout_point" ]
+    then
+      result_check_merge=0
+    fi
+  fi
+
+  if [ $result_check_merge -eq 1 ]
+  then
+    echo >&2 "*** Branch behind master ***  ❌ "
+    exit 1
+  fi
+}
+
+
+default_config
 read_config
 find_dir
 
@@ -161,13 +203,21 @@ do
   then
     :
   else
-    if [ -z "$use_inc_check" ]
+    if [ ! -z "$disable_merge_check" ]
     then
-      cd "$work_dir"
-      npm_test
-    else
-      cd "$cur_dir"
-      lint_test
+      check_ref_merge "$local_ref"
+    fi
+
+    if [ ! -z "$disable_lint_check" ]
+    then
+      if [ -z "$use_inc_check" ]
+      then
+        cd "$work_dir"
+        npm_test
+      else
+        cd "$cur_dir"
+        lint_test
+      fi
     fi
   fi
 done
