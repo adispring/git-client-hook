@@ -86,7 +86,7 @@ check_range()
 {
   if [ "$remote_sha" = $z40 ]
   then
-    range=$(git merge-base origin/master HEAD)
+    range=$(git merge-base --fork-point HEAD)
     range="$range..."
   else
     range="$remote_sha..$local_sha"
@@ -177,6 +177,7 @@ check_ref_merge()
     result_check_merge=0 # tag, note or others
   else
     # TODO: 'master' branch shoudle be config
+    git fetch # update local refs
     latest_rev="$(git rev-list -1 refs/remotes/origin/master)"
     checkout_point="$(git merge-base refs/remotes/origin/master $1)"
     if [ "$latest_rev" = "$checkout_point" ]
@@ -187,6 +188,7 @@ check_ref_merge()
 
   if [ $result_check_merge -eq 1 ]
   then
+    echo "Run \"git merge origin/master\" first"
     echo >&2 "*** Branch behind master ***  ❌ "
     exit 1
   fi
