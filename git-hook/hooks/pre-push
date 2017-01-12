@@ -92,7 +92,7 @@ check_range()
     range="$remote_sha..$local_sha"
   fi
   echo "Range: $range"
-  files=$(git diff --name-status "$range" . |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
+  files=$(git diff --name-status "$range" "$work_dir" |grep "^[AM]" |awk '{ print $2 }' |grep "\.js$")
 }
 
 lint_test()
