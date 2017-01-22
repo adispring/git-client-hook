@@ -65,6 +65,10 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
+### v0.0.18
+
+1. check whether feature branch merged/rebased newest master branch in pre-push.
+
 ### v0.0.17
 ### v0.0.16
 1. add travis ci
