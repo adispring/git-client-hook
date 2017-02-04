@@ -38,6 +38,18 @@ read_config()
   else
     use_inc_check=1
   fi
+  if [ -z "$disable_merge_check" ]
+  then
+    disable_merge_check=
+  else
+    disable_merge_check=1
+  fi
+  if [ -z "$disable_lint_check" ]
+  then
+    disable_lint_check=
+  else
+    disable_lint_check=1
+  fi
 }
 
 find_dir()
@@ -171,7 +183,7 @@ check_ref_type()
 check_ref_merge()
 {
   result_check_merge=1
-  ref_type=$(check_type "$1")
+  ref_type=$(check_ref_type "$1")
   if [ "$ref_type" != "heads" ]
   then
     result_check_merge=0 # tag, note or others
@@ -205,14 +217,14 @@ do
   then
     :
   else
-    if [ ! -z "$disable_merge_check" ]
+    if [ -z "$disable_merge_check" ]
     then
       check_ref_merge "$local_ref"
     fi
 
-    if [ ! -z "$disable_lint_check" ]
+    if [ -z "$disable_lint_check" ]
     then
-      if [ -z "$use_inc_check" ]
+      if [ ! -z "$use_inc_check" ]
       then
         cd "$work_dir"
         npm_test
