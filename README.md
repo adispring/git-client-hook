@@ -65,6 +65,10 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
+### v0.0.19
+
+1. force feature branch update to master branch before git push.
+
 ### v0.0.18
 
 1. check whether feature branch merged/rebased newest master branch in pre-push.
