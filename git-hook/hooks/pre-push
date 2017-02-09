@@ -222,9 +222,9 @@ do
       check_ref_merge "$local_ref"
     fi
 
-    if [ -z "$disable_lint_check" ]
+    if [ -z "$disable_lint_check" ] # if not set "disable_lint_check"
     then
-      if [ ! -z "$use_inc_check" ]
+      if [ -z "$use_inc_check" ] # if not set "use_inc_check"
       then
         cd "$work_dir"
         npm_test
