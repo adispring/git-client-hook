@@ -42,21 +42,26 @@ is_branch_has_jira() {
   fi
 }
 
-is_commit_msg_empty() {
-  echo "$COMMIT_EDITMSG" &> commit_msg.temp
+pick_real_commit_msg() {
+  echo "$1" &> commit_msg.temp
   local temp_msg=`sed -e '/# Everything below will be removed\./,$ d' \
     -e '/^#/d' \
     -e '/^[[:space:]]*$/d' \
     commit_msg.temp`
   rm commit_msg.temp
-  if [ -z "$temp_msg" ]; then
+  echo "$temp_msg"
+}
+
+is_commit_msg_empty() {
+  local commit_msg=$(pick_real_commit_msg "$COMMIT_EDITMSG")
+  if [ -z "$commit_msg" ]; then
     echo "Commit message should not be Empty! Write Sth about the commit. ✏️ "
     exit 1
   fi
 }
 
 is_branch_already_in_commit() {
-  local branch_in_commit=$(echo $1 | grep -c "$JIRA_STR")
+  local branch_in_commit=$(pick_real_commit_msg $1 | grep -c "$JIRA_STR")
   if [ $branch_in_commit -ge 1 ]; then
     exit 0
   fi

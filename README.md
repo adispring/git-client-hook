@@ -65,6 +65,11 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
+### v0.0.21
+
+1. fix: JIRA Number can not prepend to commit-msg when `git commit` with editor.
+
+### v0.0.20
 ### v0.0.19
 
 1. force feature branch update to master branch before git push.
