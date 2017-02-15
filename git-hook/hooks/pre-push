@@ -65,7 +65,7 @@ find_dir()
       node_dir=$(find "$cur_dir" -d $depth -type d -name "node_modules" | head -n 1)
       if [ $depth -gt 10 ]
       then
-        echo >&2 "**** Not Found 'node_modules' ****  ⛔️ "
+        echo >&2 "**** Not Found 'node_modules' ****  ⛔️"
         exit 1
       fi
     done
@@ -85,12 +85,12 @@ npm_test()
   if [ -n "$test_result" ]
   then
     cat "$GITHOOK_TEMP_FILE"
-    echo >&2 "**** NPM Test ERROR!  ****  🐞 "
+    echo >&2 "**** NPM Test ERROR!  ****  🐞"
     rm "$GITHOOK_TEMP_FILE"
     exit 1
   else
     rm "$GITHOOK_TEMP_FILE"
-    echo "**** NPM Test PASSED! ****  🍻 "
+    echo "**** NPM Test PASSED! ****  🍻"
   fi 
 }
 
@@ -144,7 +144,7 @@ lint_test()
     # no js files modified or added
     exit 0
   else
-    echo "**** ESlint Testing... ****  🔍 "
+    echo "**** ESlint Testing... ****  🔍"
 
     local tmp_file=".eslint-files"
     echo "$files" > $tmp_file
@@ -155,11 +155,11 @@ lint_test()
       "$eslint_bin" \
       $eslint_config $eslint_ignore \
       > "$work_dir/$GITHOOK_TEMP_FILE" \
-      && echo "**** ESlint PASSED!    ****  🍻 ")
+      && echo "**** ESlint PASSED!    ****  🍻")
     cat "$work_dir/$GITHOOK_TEMP_FILE"
     if [ -z "$lint_result" ]
     then
-      echo >&2 "**** ESlint NOT Passed ****  🐞 "
+      echo >&2 "**** ESlint NOT Passed ****  🐞"
       exitcode=1
     else
       echo "$lint_result"
@@ -201,7 +201,7 @@ check_ref_merge()
   if [ $result_check_merge -eq 1 ]
   then
     echo "Run \"git merge origin/master\" first"
-    echo >&2 "*** Branch behind master ***  ❌ "
+    echo >&2 "*** Branch behind master ***  ❌"
     exit 1
   fi
 }

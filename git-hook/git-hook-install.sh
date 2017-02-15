@@ -66,7 +66,7 @@ then
     echo "install ${hook_file}"
     cp "$FROM_HOOK_PATH/$hook_file" "$TO_HOOK_PATH/$hook_file"
   done
-  echo "GIT CLIENT HOOK install done!  🍻 "
+  echo "GIT CLIENT HOOK install done!  🍻"
 else
   echo "No git client hooks should install"
 fi

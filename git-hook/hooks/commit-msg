@@ -29,7 +29,7 @@ is_branch_empty() {
 is_branch_excluded() {
   local branch_excluded=$(echo "$BRANCH_NAME" | grep "$BRANCHES_TO_SKIP")
   if [ -n "$branch_excluded" ]; then
-    echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⛔️ "
+    echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⚠️ "
     exit 0
   fi
 }
