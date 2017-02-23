@@ -65,6 +65,11 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ## DONE
 
+### v0.0.22
+
+1. restrict branch name format: [feature | bugfix | hotfix]/JIRA-xxxx-brief-description.
+2. optimize emoji.
+
 ### v0.0.21
 
 1. fix: JIRA Number can not prepend to commit-msg when `git commit` with editor.

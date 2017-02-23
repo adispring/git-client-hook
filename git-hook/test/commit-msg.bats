@@ -15,25 +15,25 @@ setup() {
 @test "commit-msg: master/develop/test/release should not be changed locally." {
   git add .
   run git commit -m "commit message"
-  assert_output_contains  "warning: Branch master should not be changed locally! ⛔️ "
+  assert_output_contains  "warning: Branch master should not be changed locally! ⚠️ "
 
   git checkout -b develop
   echo 'develop' > new_file.js
   git add .
   run git commit -m "commit message"
-  assert_output_contains  "warning: Branch develop should not be changed locally! ⛔️ "
+  assert_output_contains  "warning: Branch develop should not be changed locally! ⚠️ "
 
   git checkout -b release
   echo 'release' > new_file.js
   git add .
   run git commit -m "commit message"
-  assert_output_contains  "warning: Branch release should not be changed locally! ⛔️ "
+  assert_output_contains  "warning: Branch release should not be changed locally! ⚠️ "
 
   git checkout -b test
   echo 'test' > new_file.js
   git add .
   run git commit -m "commit message"
-  assert_output_contains  "warning: Branch test should not be changed locally! ⛔️ "
+  assert_output_contains  "warning: Branch test should not be changed locally! ⚠️ "
 }
 
 @test "commit-msg: branch name should contains jira task." {
