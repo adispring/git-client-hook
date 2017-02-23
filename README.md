@@ -67,7 +67,8 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 
 ### v0.0.22
 
-1. optimize emoji
+1. restrict branch name format: [feature | bugfix | hotfix]/JIRA-xxxx-brief-description.
+2. optimize emoji.
 
 ### v0.0.21
 

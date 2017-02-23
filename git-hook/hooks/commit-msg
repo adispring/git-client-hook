@@ -15,6 +15,8 @@ JIRA_STR=$(echo $BRANCH_NAME |grep -oh $JIRA_MATCH)
 
 COMMIT_EDITMSG="$(cat "$1")"
 
+PREFIX_NAME='^\(feature\|bugfix\|hotfix\)/'
+
 if [ -z "$BRANCHES_TO_SKIP" ]; then
   BRANCHES_TO_SKIP='^\(master\|develop\|release\|test\)$'
 fi
@@ -31,6 +33,14 @@ is_branch_excluded() {
   if [ -n "$branch_excluded" ]; then
     echo "warning: Branch ${BRANCH_NAME} should not be changed locally! ⚠️ "
     exit 0
+  fi
+}
+
+is_branch_has_prefix_name() {
+  local branch_with_prefix_name=$(echo "$BRANCH_NAME" | grep "$PREFIX_NAME")
+  if [ -z "$branch_with_prefix_name" ]; then
+    echo -e "Branch name: \"$BRANCH_NAME\" format error: lost prefix.\nCorrect branch name format is as follows: [feature | bugfix | hotfix]/JIRA-xxxx-brief-description. Please fix it !!! ✏️ "
+    exit 1
   fi
 }
     
@@ -71,6 +81,7 @@ is_branch_empty
 is_commit_msg_empty
 is_branch_excluded
 is_branch_has_jira
+is_branch_has_prefix_name
 is_commit_msg_empty
 is_branch_already_in_commit "$COMMIT_EDITMSG"
 
