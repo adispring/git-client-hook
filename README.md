@@ -18,6 +18,7 @@ and output errors npm test found.
 1. Check if commit-msg is valid, check options as follows:
     * if commit on branch: **master/develop/release/test**, it will output a warning.
     * if **commit without any message**, this commit will fail.
+    * if branch name format does not satisfy `[feature | release | bugfix | hotfix]/JIRA-xxxx-brief-description`, this commit will fail. ([correct branch name format](https://confluence.atlassian.com/bitbucketserver/using-branches-in-bitbucket-server-776639968.html))
     * if commit message already contains a jira task number(regex: `[A-Z][A-Z_0-9]+-[0-9]+`), it will not add one again.
 2. Add JIRA TASK number(branch name) to commit-msg.
 
@@ -64,6 +65,11 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 2. add git-hook CLI: 1.custom pre-commit email verify; 2.batch change current branch commits email 
 
 ## DONE
+
+### v0.0.23
+
+1. add branch name format reference link.
+2. add branch name of `release`.
 
 ### v0.0.22
 

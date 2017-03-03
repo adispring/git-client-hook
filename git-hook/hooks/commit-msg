@@ -15,7 +15,7 @@ JIRA_STR=$(echo $BRANCH_NAME |grep -oh $JIRA_MATCH)
 
 COMMIT_EDITMSG="$(cat "$1")"
 
-PREFIX_NAME='^\(feature\|bugfix\|hotfix\)/'
+PREFIX_NAME='^\(feature\|release\|bugfix\|hotfix\)/'
 
 if [ -z "$BRANCHES_TO_SKIP" ]; then
   BRANCHES_TO_SKIP='^\(master\|develop\|release\|test\)$'
@@ -39,7 +39,8 @@ is_branch_excluded() {
 is_branch_has_prefix_name() {
   local branch_with_prefix_name=$(echo "$BRANCH_NAME" | grep "$PREFIX_NAME")
   if [ -z "$branch_with_prefix_name" ]; then
-    echo -e "Branch name: \"$BRANCH_NAME\" format error: lost prefix.\nCorrect branch name format is as follows: [feature | bugfix | hotfix]/JIRA-xxxx-brief-description. Please fix it !!! ✏️ "
+    echo -e "Branch name: \"$BRANCH_NAME\" format error. Please fix it !!! ✏️ .\nCorrect branch name format is as follows: [feature | release | bugfix | hotfix]/JIRA-xxxx-brief-description."
+    echo -e "Branching model: https://confluence.atlassian.com/bitbucketserver/using-branches-in-bitbucket-server-776639968.html"
     exit 1
   fi
 }
