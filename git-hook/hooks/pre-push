@@ -182,6 +182,7 @@ check_ref_type()
 
 check_ref_merge()
 {
+  local_sha1="$2"
   result_check_merge=1
   ref_type=$(check_ref_type "$1")
   if [ "$ref_type" != "heads" ]
@@ -190,18 +191,36 @@ check_ref_merge()
   else
     # TODO: 'master' branch shoudle be config
     git fetch # update local refs
-    latest_rev="$(git rev-list -1 refs/remotes/origin/master)"
-    checkout_point="$(git merge-base refs/remotes/origin/master $1)"
-    if [ "$latest_rev" = "$checkout_point" ]
+    master_sha1=$(git rev-parse refs/remotes/origin/master)
+    git merge-base --is-ancestor $master_sha1 $local_sha1; echo $?
+    if [[ "$(git merge-base --is-ancestor $master_sha1 $local_sha1; echo $?)" = "0" \
+      || "$(git merge-base --is-ancestor $local_sha1 $master_sha1; echo $?)" = "0" ]]
     then
       result_check_merge=0
+    else
+      master_parents=$(git rev-parse "$master_sha1"^@) 
+      parents_count=$(echo $master_parents | wc -l)
+      echo $parents_count
+      if [ $parents_count -eq 2 ]
+      then
+        master_2nd_parent_sha1=$(git rev-parse "$master_sha1"^2)
+        if [ $(git merge-base --is-ancestor $local_sha1 $master_2nd_parent_sha1) -eq 1 ]
+        then
+          result_check_merge=0
+        fi
+      elif [ $parents_count -gt 2 ]
+      then
+        # TODO: need to process case of more than 2 branches merging.
+        echo "4"
+        result_check_merge=0
+      fi
     fi
   fi
 
   if [ $result_check_merge -eq 1 ]
   then
-    echo "Run \"git merge origin/master\" first"
     echo >&2 "*** Branch behind master ***  ❌"
+    echo "Run \"git merge origin/master\" first"
     exit 1
   fi
 }
@@ -219,7 +238,7 @@ do
   else
     if [ -z "$disable_merge_check" ]
     then
-      check_ref_merge "$local_ref"
+      check_ref_merge "$local_ref" "$local_sha"
     fi
 
     if [ -z "$disable_lint_check" ] # if not set "disable_lint_check"
