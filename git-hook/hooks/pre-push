@@ -182,45 +182,51 @@ check_ref_type()
 
 check_ref_merge()
 {
-  local_sha1="$2"
-  result_check_merge=1
-  ref_type=$(check_ref_type "$1")
-  if [ "$ref_type" != "heads" ]
+  local local_ref1="$1"
+  local local_sha1="$2"
+  local result_check_merge=1
+  echo "0"
+  if [ "$(check_ref_type "$1")" != "heads" ]
   then
+    echo "1"
     result_check_merge=0 # tag, note or others
   else
     # TODO: 'master' branch shoudle be config
+    echo "2"
     git fetch # update local refs
     master_sha1=$(git rev-parse refs/remotes/origin/master)
-    git merge-base --is-ancestor $master_sha1 $local_sha1; echo $?
     if [[ "$(git merge-base --is-ancestor $master_sha1 $local_sha1; echo $?)" = "0" \
       || "$(git merge-base --is-ancestor $local_sha1 $master_sha1; echo $?)" = "0" ]]
     then
+      echo "3"
       result_check_merge=0
     else
-      master_parents=$(git rev-parse "$master_sha1"^@) 
-      parents_count=$(echo $master_parents | wc -l)
-      echo $parents_count
+      echo "4"
+      local master_parents=($(git rev-parse "$master_sha1"^@ | tr "\n" " ")) 
+      local parents_count=${#master_parents[@]}
       if [ $parents_count -eq 2 ]
       then
-        master_2nd_parent_sha1=$(git rev-parse "$master_sha1"^2)
-        if [ $(git merge-base --is-ancestor $local_sha1 $master_2nd_parent_sha1) -eq 1 ]
+        echo "5"
+        local master_2nd_parent_sha1=$(git rev-parse "$master_sha1"^2)
+        if [[ "$(git merge-base --is-ancestor $master_2nd_parent_sha1 $local_sha1; echo $?)" = "0" ]]
         then
+          echo "6"
           result_check_merge=0
         fi
-      elif [ $parents_count -gt 2 ]
+      elif [[ $parents_count -gt 2 ]]
       then
         # TODO: need to process case of more than 2 branches merging.
-        echo "4"
+        echo "7"
         result_check_merge=0
       fi
     fi
   fi
 
-  if [ $result_check_merge -eq 1 ]
+  if [[ $result_check_merge -eq 1 ]]
   then
-    echo >&2 "*** Branch behind master ***  ❌"
-    echo "Run \"git merge origin/master\" first"
+    local branch=${local_ref1##*/}
+    echo >&2 "*** Branch: $branch is behind refs/remotes/origin/master ***  ❌"
+    echo "*** Run \"git checkout $branch && git merge origin/master\" to update $1 to refs/remotes/origin/master ! *** 🔧 "
     exit 1
   fi
 }
