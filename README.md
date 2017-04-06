@@ -10,8 +10,8 @@ git-client-hook used for installing some [git client hook](https://git-scm.com/b
 
 ### `pre-push`: run npm test before git push
 
-If `npm test` passed, git push will go on, else git push will be cancelled,
-and output errors npm test found.
+1. If `npm test` passed, git push will go on, else git push will be cancelled, and output errors npm test found.
+2. Check if the pushing branch is update to newest remotes/origion/master.
 
 ### `commit-msg`: add branch name(jira) to commit message automatically & do some check
 
@@ -65,6 +65,10 @@ tracker](https://github.com/adispring/git-client-hook/issues).
 2. add git-hook CLI: 1.custom pre-commit email verify; 2.batch change current branch commits email 
 
 ## DONE
+
+### v0.0.24
+
+1. optimize "feature branch update to master branch before push".
 
 ### v0.0.23
 

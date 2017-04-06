@@ -182,26 +182,43 @@ check_ref_type()
 
 check_ref_merge()
 {
-  result_check_merge=1
-  ref_type=$(check_ref_type "$1")
-  if [ "$ref_type" != "heads" ]
+  local local_ref1="$1"
+  local local_sha1="$2"
+  local result_check_merge=1
+  if [ "$(check_ref_type "$1")" != "heads" ]
   then
     result_check_merge=0 # tag, note or others
   else
     # TODO: 'master' branch shoudle be config
     git fetch # update local refs
-    latest_rev="$(git rev-list -1 refs/remotes/origin/master)"
-    checkout_point="$(git merge-base refs/remotes/origin/master $1)"
-    if [ "$latest_rev" = "$checkout_point" ]
+    master_sha1=$(git rev-parse refs/remotes/origin/master)
+    if [[ "$(git merge-base --is-ancestor $master_sha1 $local_sha1; echo $?)" = "0" \
+      || "$(git merge-base --is-ancestor $local_sha1 $master_sha1; echo $?)" = "0" ]]
     then
       result_check_merge=0
+    else
+      local master_parents=($(git rev-parse "$master_sha1"^@ | tr "\n" " ")) 
+      local parents_count=${#master_parents[@]}
+      if [ $parents_count -eq 2 ]
+      then
+        local master_2nd_parent_sha1=$(git rev-parse "$master_sha1"^2)
+        if [[ "$(git merge-base --is-ancestor $master_2nd_parent_sha1 $local_sha1; echo $?)" = "0" ]]
+        then
+          result_check_merge=0
+        fi
+      elif [[ $parents_count -gt 2 ]]
+      then
+        # TODO: need to process case of more than 2 branches merging.
+        result_check_merge=0
+      fi
     fi
   fi
 
-  if [ $result_check_merge -eq 1 ]
+  if [[ $result_check_merge -eq 1 ]]
   then
-    echo "Run \"git merge origin/master\" first"
-    echo >&2 "*** Branch behind master ***  ❌"
+    local branch=${local_ref1##*/}
+    echo >&2 "*** Branch: $branch is behind refs/remotes/origin/master ***  ❌"
+    echo "*** Run \"git checkout $branch && git merge origin/master\" to update $1 to refs/remotes/origin/master ! *** 🔧 "
     exit 1
   fi
 }
@@ -219,7 +236,7 @@ do
   else
     if [ -z "$disable_merge_check" ]
     then
-      check_ref_merge "$local_ref"
+      check_ref_merge "$local_ref" "$local_sha"
     fi
 
     if [ -z "$disable_lint_check" ] # if not set "disable_lint_check"
