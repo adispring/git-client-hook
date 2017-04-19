@@ -10,7 +10,7 @@
 #   <local ref> <local sha1> <remote ref> <remote sha1>
 
 GITHOOK_CONFIG=.githookrc
-GITHOOK_TEMP_FILE=".$(date +%s%d).temp"
+GITHOOK_TEMP_FILE="$(mktemp)"
 
 remote="$1"
 url="$2"
@@ -146,12 +146,12 @@ lint_test()
   else
     echo "**** ESlint Testing... ****  🔍"
 
-    local tmp_file=".eslint-files"
-    echo "$files" > $tmp_file
-    cat $tmp_file
+    local tmp_file="$(mktemp)"
+    echo "$files" > "$tmp_file"
+    cat "$tmp_file"
 
     echo "eslint version:" "$("$eslint_bin" --version)"
-    lint_result=$(cat $tmp_file |xargs \
+    lint_result=$(cat "$tmp_file" |xargs \
       "$eslint_bin" \
       $eslint_config $eslint_ignore \
       > "$work_dir/$GITHOOK_TEMP_FILE" \
@@ -166,7 +166,7 @@ lint_test()
     fi
 
     rm "$work_dir/$GITHOOK_TEMP_FILE"
-    rm $tmp_file
+    rm "$tmp_file"
 
     # cd "$work_dir"
     echo ""
