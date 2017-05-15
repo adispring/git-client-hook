@@ -54,12 +54,13 @@ is_branch_has_jira() {
 }
 
 pick_real_commit_msg() {
-  echo "$1" &> commit_msg.temp
+  local msg_tempfile="$(mktemp)"
+  echo "$1" &> "$msg_tempfile"
   local temp_msg=`sed -e '/# Everything below will be removed\./,$ d' \
     -e '/^#/d' \
     -e '/^[[:space:]]*$/d' \
-    commit_msg.temp`
-  rm commit_msg.temp
+    "$msg_tempfile"`
+  rm "$msg_tempfile"
   echo "$temp_msg"
 }
 
