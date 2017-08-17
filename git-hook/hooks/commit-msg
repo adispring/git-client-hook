@@ -84,7 +84,6 @@ is_commit_msg_empty
 is_branch_excluded
 is_branch_has_jira
 is_branch_has_prefix_name
-is_commit_msg_empty
 is_branch_already_in_commit "$COMMIT_EDITMSG"
 
 echo "$JIRA_STR" "$(cat "$1")" > $1
