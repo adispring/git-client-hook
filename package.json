@@ -7,8 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm run git-test",
-    "git-test": "bats git-hook/test",
+    "test": "exit 0",
     "postinstall": "bash ./git-hook/git-hook-install.sh",
     "preuninstall": "bash ./git-hook/git-hook-uninstall.sh"
   },
@@ -26,9 +25,5 @@
   "bugs": {
     "url": "https://github.com/adispring/git-client-hook/issues"
   },
-  "homepage": "https://github.com/adispring/git-client-hook#readme",
-  "devDependencies": {
-    "bats": "^0.4.2",
-    "bats-assert": "^1.0.1"
-  }
+  "homepage": "https://github.com/adispring/git-client-hook#readme"
 }
